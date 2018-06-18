@@ -7,10 +7,22 @@ namespace Scrubbie
 {
     public class Scrub
     {
+        const int DefaultRegxCacheSize = 16;
+
         public Dictionary<string, string> StringTransDict { private set; get; }
         public List<(string, string)> RegxTuples { private set; get; }
         public Dictionary<char, char> CharTransDict { private set; get; }
         private string _translatedStr;
+
+        public int CacheSize
+        {
+            set
+            {
+                Regex.CacheSize = value < 0 ? DefaultRegxCacheSize : value;
+            }
+
+            get => Regex.CacheSize;
+        }
 
         /// <summary>
         /// Constructor for the Scrubbies class. It set up default state
@@ -24,6 +36,8 @@ namespace Scrubbie
             StringTransDict = new Dictionary<string, string>();
             RegxTuples = new List<(string, string)>();
             CharTransDict = new Dictionary<char, char>();
+
+            // set the default regx compiled cache size
         }
 
         /// <summary>
@@ -119,17 +133,16 @@ namespace Scrubbie
         /// <summary>
         /// Does a regx strip on the working sting. The passed in
         /// expression is a C# Regx style pattern match. This is designed
-        /// to be more of an on-the-fly regx. Will compile regx each time.
+        /// to be more of an on-the-fly regx. Will Regex will compile and cache for
+        /// static calls like this.
         /// </summary>
         /// <param name="matchRegx"></param>
         /// <returns>Scrubbies</returns>
         public Scrub Strip(string matchRegx)
         {
-            // this is the regx string to match
-            Regex rgx = new Regex(matchRegx);
+            // Call static replace method, strip and save
 
-            // strip and save
-            _translatedStr = rgx.Replace(_translatedStr, String.Empty);
+            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty);
 
             return this;
         }
@@ -149,6 +162,7 @@ namespace Scrubbie
             }
 
             // simple in this case, just get the value from the map
+
             return StringTransDict.ContainsKey(origStr) ? StringTransDict[origStr] : origStr;
         }
 
@@ -218,11 +232,9 @@ namespace Scrubbie
 
             foreach ((string, string) regxTuple in RegxTuples)
             {
-                // Todo: Pre-compile Regx
-                // compile the regx for each one, (all could be pre-compiled if a list of these built earlier)
+                // static will compile and cache the regx for each one
 
-                Regex rgx = new Regex(regxTuple.Item1);
-                _translatedStr = rgx.Replace(_translatedStr, regxTuple.Item2);
+                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2);
             }
 
             return this;

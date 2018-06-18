@@ -183,5 +183,18 @@ namespace UnitTests
             Assert.AreEqual(0, st.StringTransDict.Count);
             Assert.AreEqual(0, st.RegxTuples.Count);
         }
+
+        [TestMethod]
+        public void SetRegxCache_CacheCount_Matches()
+        {
+            Scrub st = new Scrub("");
+
+            // set and set again
+            st.CacheSize = 1;
+            int expectedSize = 39;
+            st.CacheSize = expectedSize;
+
+            Assert.AreEqual(expectedSize, st.CacheSize);
+        }
     }
 }
