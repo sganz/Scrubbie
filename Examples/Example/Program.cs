@@ -90,7 +90,24 @@ namespace Example
 
             Console.WriteLine("Translated   : >{0}<", translated);
 
+            // reset the string with some emails
+            st.Set("Hank@kimball.com is sending an email to haystack@calhoon.com");
 
+            translated = st.RegxDefined("Email", "**Email Removed**").ToString();
+
+            Console.WriteLine("Masked   : >{0}<", translated);
+
+            st.Set("　前に来た時は北側からで、当時の光景はいまでも思い出せる。 Even now I remember the scene I saw approaching the city from the north. 　青竜山脈から流れる川が湖へと流れこむ様、湖の中央には純白のホ");
+            translated = st.RegxDefined("NonAscii", string.Empty).ToString();
+
+            Console.WriteLine("To all ASCII : >{0}<", translated);
+
+            // reset the string with some emails
+            st.Set(@"<h1>Title</h1><script>var a=1; \\comment</script> Not In Script Tags");
+
+            translated = st.RegxDefined("ScriptTags", string.Empty).RegxDefined("TagsSimple", string.Empty).ToString();
+
+            Console.WriteLine("Strip Script and Tags   : >{0}<", translated);
         }
     }
 }

@@ -43,11 +43,15 @@ namespace Scrubbie
         /// a dictionay of tuples that  have the Match Pattern and the Replace String.
         /// Under user control so can be updated.
         /// </summary>
-        public Dictionary<string, (string, string)> RegxDefinedTuples { private set; get; } = new Dictionary<string, (string, string)>()
+        public Dictionary<string, string> RegxMatchesDefined { private set; get; } = new Dictionary<string, string>()
         {
-            { "CompactWhitespace" , (@"\s+", " ")},
-            { "TrimEnds", (@"^\s*|\s*$", "") },
-            { "EmailMask", (@"?<=.{2}).(?=[^@]*?@)", "*" )}
+            { "WhitespaceCompact" , @"\s+"},
+            { "WhitespaceEnds", @"^\s*|\s*$" }, // like regular string trim
+            { "SingleEmailMask", @"(?<=.{2}).(?=[^@]*?@)" },  // masks a string with single email, confused by extra @ like abc***@crap.com
+            { "Email", @"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)"},
+            { "NonAscii", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*" }, // removes all non-Ascii
+            { "TagsSimple" , @"\<[^\>]*\>" },     // strip tags, simple version
+            { "ScriptTags" , @"<script[^>]*>[\s\S]*?</script>" },
         };
 
         /// <summary>
@@ -272,29 +276,28 @@ namespace Scrubbie
             return this;
         }
 
-        /// <summary>
-        /// This will a predefined Regx match and replacement value to be used by it's name.
-        /// This comes from the RegxDefinedTuples dictionary.
+        ///  <summary>
+        ///  This will a predefined Regx match and replacement value to be used by it's name.
+        ///  This comes from the RegxDefinedTuples dictionary.
         ///
-        /// Currently if the name is not found in the dictionary it just ignores it and returns
-        /// the current state.
-        /// </summary>
+        ///  Currently if the name is not found in the dictionary it just ignores it and returns
+        ///  the current state.
+        ///  </summary>
+        /// <param name="preDefined">String Name of the predefined match pattern</param>
+        /// <param name="replacement">String of the data to replace matches, default is to empty string (strip)</param>
         /// <returns>Scrubbies</returns>
-        public Scrub RegxDefined(string preDefined)
+        public Scrub RegxDefined(string preDefined, string replacement = "")
         {
-            // for each regx replace in the tuple list do a regx replace
-            // with the regx as Item1 and the replace as Item2
+            // Throw with nicer message if invalid dict key
 
-            // not in the predefined list, just pass along.
-            // could Throw, but not sure about that as yet.
-            if (!RegxDefinedTuples.ContainsKey(preDefined))
+            if (!RegxMatchesDefined.ContainsKey(preDefined))
             {
-                return this;
+                throw new KeyNotFoundException("Invalid Defined Regx Specified : `" + preDefined + "` Does not exist, sorry!");
             }
 
             // static will compile and cache the regx for each one
 
-            _translatedStr = Regex.Replace(_translatedStr, RegxDefinedTuples[preDefined].Item1, RegxDefinedTuples[preDefined].Item2, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
+            _translatedStr = Regex.Replace(_translatedStr, RegxMatchesDefined[preDefined], replacement, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
 
             return this;
         }

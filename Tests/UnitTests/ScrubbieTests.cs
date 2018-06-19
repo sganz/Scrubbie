@@ -17,7 +17,7 @@ namespace UnitTests
             Assert.IsNotNull(st.CharTransDict);
             Assert.IsNotNull(st.RegxTuples);
             Assert.IsNotNull(st.StringTransDict);
-            Assert.IsNotNull(st.RegxDefinedTuples);
+            Assert.IsNotNull(st.RegxMatchesDefined);
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace UnitTests
             Assert.IsNotNull(st.RegxTuples);
             Assert.IsNotNull(st.StringTransDict);
             Assert.AreEqual(expect, st.ToString());
-            Assert.IsNotNull(st.RegxDefinedTuples);
+            Assert.IsNotNull(st.RegxMatchesDefined);
         }
 
         [TestMethod]
