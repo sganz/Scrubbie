@@ -8,12 +8,26 @@ namespace Scrubbie
     public class Scrub
     {
         const int DefaultRegxCacheSize = 16;
+        private const double DefaultTkoSeconds = 1.0d;
 
         public Dictionary<string, string> StringTransDict { private set; get; }
         public List<(string, string)> RegxTuples { private set; get; }
         public Dictionary<char, char> CharTransDict { private set; get; }
         private string _translatedStr;
+        private double _tkoSeconds;
 
+        /// <summary>
+        /// Sets the MatchTimeout value for all regx calls
+        /// </summary>
+        public double TkoSeconds
+        {
+            set => _tkoSeconds = value <= 0.0 ? DefaultTkoSeconds : value;
+            get => _tkoSeconds;
+        }
+
+        /// <summary>
+        /// Set the cache size for statically called regx calls used within
+        /// </summary>
         public int CacheSize
         {
             set
@@ -23,6 +37,18 @@ namespace Scrubbie
 
             get => Regex.CacheSize;
         }
+
+        /// <summary>
+        /// Default regx dictionay of helpers that do common things. Basically
+        /// a dictionay of tuples that  have the Match Pattern and the Replace String.
+        /// Under user control so can be updated.
+        /// </summary>
+        public Dictionary<string, (string, string)> RegxDefinedTuples { private set; get; } = new Dictionary<string, (string, string)>()
+        {
+            { "CompactWhitespace" , (@"\s+", " ")},
+            { "TrimEnds", (@"^\s*|\s*$", "") },
+            { "EmailMask", (@"?<=.{2}).(?=[^@]*?@)", "*" )}
+        };
 
         /// <summary>
         /// Constructor for the Scrubbies class. It set up default state
@@ -37,7 +63,13 @@ namespace Scrubbie
             RegxTuples = new List<(string, string)>();
             CharTransDict = new Dictionary<char, char>();
 
-            // set the default regx compiled cache size
+            // set OUR default regx compiled cache size
+
+            CacheSize = DefaultRegxCacheSize;
+
+            // set local time out (TKO) for all regx's
+
+            TkoSeconds = DefaultTkoSeconds;
         }
 
         /// <summary>
@@ -142,7 +174,7 @@ namespace Scrubbie
         {
             // Call static replace method, strip and save
 
-            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty);
+            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
 
             return this;
         }
@@ -234,8 +266,35 @@ namespace Scrubbie
             {
                 // static will compile and cache the regx for each one
 
-                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2);
+                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// This will a predefined Regx match and replacement value to be used by it's name.
+        /// This comes from the RegxDefinedTuples dictionary.
+        ///
+        /// Currently if the name is not found in the dictionary it just ignores it and returns
+        /// the current state.
+        /// </summary>
+        /// <returns>Scrubbies</returns>
+        public Scrub RegxDefined(string preDefined)
+        {
+            // for each regx replace in the tuple list do a regx replace
+            // with the regx as Item1 and the replace as Item2
+
+            // not in the predefined list, just pass along.
+            // could Throw, but not sure about that as yet.
+            if (!RegxDefinedTuples.ContainsKey(preDefined))
+            {
+                return this;
+            }
+
+            // static will compile and cache the regx for each one
+
+            _translatedStr = Regex.Replace(_translatedStr, RegxDefinedTuples[preDefined].Item1, RegxDefinedTuples[preDefined].Item2, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
 
             return this;
         }

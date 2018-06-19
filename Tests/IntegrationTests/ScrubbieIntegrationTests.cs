@@ -9,6 +9,36 @@ namespace IntegrationTests
     public class ScrubbieIntegrationTests
     {
         [TestMethod]
+        public void Predefined_CompactWhitespace_Compacted()
+        {
+            string sentence = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
+            string expectedSentance = "¿¡Señor, the Chevrolet guys don't like Dodge guys, and and no one like MaZdA, Ola Senor?! ";
+
+            Scrub st = new Scrub(sentence);
+
+            // Compact whitespaces to one space, note does not imply trim!
+
+            st.RegxDefined("CompactWhitespace");
+
+            Assert.AreEqual(expectedSentance, st.ToString());
+        }
+
+        [TestMethod]
+        public void Predefined_InvalidName_Untouched()
+        {
+            string sentence = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
+            string expectedSentance = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
+
+            Scrub st = new Scrub(sentence);
+
+            // Compact whitespaces to one space, note does not imply trim!
+
+            st.RegxDefined("NotInTheListOfDefined");
+
+            Assert.AreEqual(expectedSentance, st.ToString());
+        }
+
+        [TestMethod]
         public void TestAll()
         {
             // get most of the mapped accent chars, and their non-accented equiv

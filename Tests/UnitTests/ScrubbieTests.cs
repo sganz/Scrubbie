@@ -17,6 +17,7 @@ namespace UnitTests
             Assert.IsNotNull(st.CharTransDict);
             Assert.IsNotNull(st.RegxTuples);
             Assert.IsNotNull(st.StringTransDict);
+            Assert.IsNotNull(st.RegxDefinedTuples);
         }
 
         [TestMethod]
@@ -29,6 +30,7 @@ namespace UnitTests
             Assert.IsNotNull(st.RegxTuples);
             Assert.IsNotNull(st.StringTransDict);
             Assert.AreEqual(expect, st.ToString());
+            Assert.IsNotNull(st.RegxDefinedTuples);
         }
 
         [TestMethod]
@@ -195,6 +197,19 @@ namespace UnitTests
             st.CacheSize = expectedSize;
 
             Assert.AreEqual(expectedSize, st.CacheSize);
+        }
+
+        [TestMethod]
+        public void SetRegxTimeOut_MatchTimeOut_Matches()
+        {
+            Scrub st = new Scrub("");
+
+            // set and set again
+            st.TkoSeconds = 1.25;
+            double expectedTKO = 3.76;
+            st.TkoSeconds = expectedTKO;
+
+            Assert.AreEqual(expectedTKO, st.TkoSeconds);
         }
     }
 }
