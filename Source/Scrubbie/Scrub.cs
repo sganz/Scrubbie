@@ -14,15 +14,16 @@ namespace Scrubbie
         public List<(string, string)> RegxTuples { private set; get; }
         public Dictionary<char, char> CharTransDict { private set; get; }
         private string _translatedStr;
-        private double _tkoSeconds;
+        private TimeSpan _tkoSeconds;
+        private RegexOptions _regxOptions;
 
         /// <summary>
         /// Sets the MatchTimeout value for all regx calls
         /// </summary>
         public double TkoSeconds
         {
-            set => _tkoSeconds = value <= 0.0 ? DefaultTkoSeconds : value;
-            get => _tkoSeconds;
+            set => _tkoSeconds = value <= 0.0 ? TimeSpan.FromSeconds(DefaultTkoSeconds) : TimeSpan.FromSeconds(value);
+            get => _tkoSeconds.TotalSeconds;
         }
 
         /// <summary>
@@ -52,6 +53,9 @@ namespace Scrubbie
             { "NonAscii", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*" }, // removes all non-Ascii
             { "TagsSimple" , @"\<[^\>]*\>" },     // strip tags, simple version
             { "ScriptTags" , @"<script[^>]*>[\s\S]*?</script>" },
+            { "ENNumber", @"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"}, // format with a decimal as a period, no commas for 1000's
+            { "EUumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)"}, // format with a decimal as a comma, no period for 1000's
+            { "UniNumber", @"[+-]?([0-9]+([.,][0-9]*)?|[,.][0-9]+)"}, // picks up numbers with either comma, period in either place. May not be valid numbers
         };
 
         /// <summary>
@@ -73,7 +77,11 @@ namespace Scrubbie
 
             // set local time out (TKO) for all regx's
 
-            TkoSeconds = DefaultTkoSeconds;
+            _tkoSeconds = TimeSpan.FromSeconds(DefaultTkoSeconds);
+
+            // set to match case (not not ignore it)
+
+            _regxOptions = RegexOptions.None;
         }
 
         /// <summary>
@@ -146,6 +154,30 @@ namespace Scrubbie
         }
 
         /// <summary>
+        /// Sets the Regx pattern matcher to Ignore case. This can
+        /// be used prior to any regx call. It does not affect any Map
+        /// function as those typically require the dictionay to be
+        /// setup prior. So be warned this is ONLY for REGX's not MAP
+        /// </summary>
+        /// <param name="ignoreCase"></param>
+        /// <returns></returns>
+        public Scrub RegxIgnoreCase(bool ignoreCase = true)
+        {
+            if (ignoreCase)
+            {
+                // add flag
+                _regxOptions |= RegexOptions.IgnoreCase;
+            }
+            else
+            {
+                // remove flag (Think bitwise)
+                _regxOptions &= ~RegexOptions.IgnoreCase;
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Translates given string based on the the characters in the dictionary. If character is
         /// not in the dictionay, it is pass thru untouched. Size of string is not changed.
         /// </summary>
@@ -178,7 +210,7 @@ namespace Scrubbie
         {
             // Call static replace method, strip and save
 
-            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
+            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty, _regxOptions, _tkoSeconds);
 
             return this;
         }
@@ -270,7 +302,7 @@ namespace Scrubbie
             {
                 // static will compile and cache the regx for each one
 
-                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
+                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2, _regxOptions, _tkoSeconds);
             }
 
             return this;
@@ -297,7 +329,7 @@ namespace Scrubbie
 
             // static will compile and cache the regx for each one
 
-            _translatedStr = Regex.Replace(_translatedStr, RegxMatchesDefined[preDefined], replacement, RegexOptions.None, TimeSpan.FromSeconds(TkoSeconds));
+            _translatedStr = Regex.Replace(_translatedStr, RegxMatchesDefined[preDefined], replacement, _regxOptions, _tkoSeconds);
 
             return this;
         }

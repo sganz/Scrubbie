@@ -211,5 +211,15 @@ namespace UnitTests
 
             Assert.AreEqual(expectedTKO, st.TkoSeconds);
         }
+
+        [TestMethod]
+        public void SetRegxOptions_MatchSetting_Matches()
+        {
+            Scrub st = new Scrub("");
+
+            // TBD
+
+        }
+
     }
 }

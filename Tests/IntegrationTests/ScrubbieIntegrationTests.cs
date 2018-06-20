@@ -17,8 +17,10 @@ namespace IntegrationTests
             Scrub st = new Scrub(sentence);
 
             // Compact whitespaces to one space, note does not imply trim!
+            // overides default empty string replace to replace with single space
+            // note trailing space at end of string
 
-            st.RegxDefined("CompactWhitespace");
+            st.RegxDefined("WhitespaceCompact", " ");
 
             Assert.AreEqual(expectedSentance, st.ToString());
         }
@@ -27,15 +29,13 @@ namespace IntegrationTests
         public void Predefined_InvalidName_Untouched()
         {
             string sentence = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
-            string expectedSentance = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
+            string expectedSentance = "¿¡Señor,theChevroletguysdon'tlikeDodgeguys,andandnoonelikeMaZdA,OlaSenor?!";
 
             Scrub st = new Scrub(sentence);
 
-            // Compact whitespaces to one space, note does not imply trim!
+            // Invalid pre-defined patter, should throw
 
-            st.RegxDefined("NotInTheListOfDefined");
-
-            Assert.AreEqual(expectedSentance, st.ToString());
+            Assert.ThrowsException<KeyNotFoundException>(() => st.RegxDefined("NotInTheListOfDefined"));
         }
 
         [TestMethod]

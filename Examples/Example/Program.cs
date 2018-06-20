@@ -108,6 +108,13 @@ namespace Example
             translated = st.RegxDefined("ScriptTags", string.Empty).RegxDefined("TagsSimple", string.Empty).ToString();
 
             Console.WriteLine("Strip Script and Tags   : >{0}<", translated);
+
+            // reset and set up a predefined match pattern and set regx case sensitivity
+            st.Set("wtf does RemoveWTF do? Is WtF Case SeNsItIvE?");
+            st.RegxMatchesDefined.Add("RemoveWTF", @"(wtf)|(what the)\s+(hell|$hit)");
+
+            translated = st.RegxIgnoreCase().RegxDefined("RemoveWTF", "XXX").ToString();
+            Console.WriteLine("New Pre-defined Match   : >{0}<", translated);
         }
     }
 }
