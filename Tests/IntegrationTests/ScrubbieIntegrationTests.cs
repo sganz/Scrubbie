@@ -29,13 +29,42 @@ namespace IntegrationTests
         public void Predefined_InvalidName_Untouched()
         {
             string sentence = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
-            string expectedSentance = "¿¡Señor,theChevroletguysdon'tlikeDodgeguys,andandnoonelikeMaZdA,OlaSenor?!";
 
             Scrub st = new Scrub(sentence);
 
             // Invalid pre-defined patter, should throw
 
             Assert.ThrowsException<KeyNotFoundException>(() => st.RegxDefined("NotInTheListOfDefined"));
+        }
+
+        [TestMethod]
+        public void IgnoreCase_RegxDefined_Matches()
+        {
+            string sentence = "wtf does RemoveWTF do? Is WtF Case SeNsItIvE?";
+            string expectedSentance = "XXX does RemoveXXX do? Is XXX Case SeNsItIvE?";
+
+            Scrub st = new Scrub(sentence);
+
+            st.Set(sentence );
+            st.RegxMatchesDefined.Add("RemoveWTF", @"(wtf)|(what the)\s+(hell|$hit)");
+            st.RegxIgnoreCase().RegxDefined("RemoveWTF", "XXX");
+
+            Assert.AreEqual(expectedSentance, st.ToString());
+        }
+
+        [TestMethod]
+        public void MatchCase_RegxDefined_Matches()
+        {
+            string sentence = "wtf does RemoveWTF do? Is WtF Case SeNsItIvE?";
+            string expectedSentance = "XXX does RemoveWTF do? Is WtF Case SeNsItIvE?";
+
+            Scrub st = new Scrub(sentence);
+
+            st.Set(sentence);
+            st.RegxMatchesDefined.Add("RemoveWTF", @"(wtf)|(what the)\s+(hell|$hit)");
+            st.RegxDefined("RemoveWTF", "XXX");
+
+            Assert.AreEqual(expectedSentance, st.ToString());
         }
 
         [TestMethod]

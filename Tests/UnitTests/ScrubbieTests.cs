@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Scrubbie;
 
@@ -213,13 +214,27 @@ namespace UnitTests
         }
 
         [TestMethod]
-        public void SetRegxOptions_MatchSetting_Matches()
+        public void SetRegxOptions_SetIgnoreCaseTrue_Matches()
         {
             Scrub st = new Scrub("");
+            RegexOptions expected = RegexOptions.IgnoreCase;
 
-            // TBD
+            // set case and check
+            st.RegxIgnoreCase(true);
 
+            Assert.AreEqual(expected, st.RegxOptions & RegexOptions.IgnoreCase);
         }
 
+        [TestMethod]
+        public void SetRegxOptions_SetIgnoreCaseFalse_Matches()
+        {
+            Scrub st = new Scrub("");
+            RegexOptions expected = st.RegxOptions & ~RegexOptions.IgnoreCase;
+
+            // set case and check
+            st.RegxIgnoreCase(false);
+
+            Assert.AreEqual(expected, st.RegxOptions & ~RegexOptions.IgnoreCase);
+        }
     }
 }

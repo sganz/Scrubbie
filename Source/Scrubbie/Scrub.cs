@@ -15,7 +15,7 @@ namespace Scrubbie
         public Dictionary<char, char> CharTransDict { private set; get; }
         private string _translatedStr;
         private TimeSpan _tkoSeconds;
-        private RegexOptions _regxOptions;
+        public RegexOptions RegxOptions { set; get; }
 
         /// <summary>
         /// Sets the MatchTimeout value for all regx calls
@@ -54,7 +54,7 @@ namespace Scrubbie
             { "TagsSimple" , @"\<[^\>]*\>" },     // strip tags, simple version
             { "ScriptTags" , @"<script[^>]*>[\s\S]*?</script>" },
             { "ENNumber", @"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"}, // format with a decimal as a period, no commas for 1000's
-            { "EUumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)"}, // format with a decimal as a comma, no period for 1000's
+            { "EUNumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)"}, // format with a decimal as a comma, no period for 1000's
             { "UniNumber", @"[+-]?([0-9]+([.,][0-9]*)?|[,.][0-9]+)"}, // picks up numbers with either comma, period in either place. May not be valid numbers
         };
 
@@ -81,7 +81,7 @@ namespace Scrubbie
 
             // set to match case (not not ignore it)
 
-            _regxOptions = RegexOptions.None;
+            RegxOptions = RegexOptions.None;
         }
 
         /// <summary>
@@ -166,12 +166,12 @@ namespace Scrubbie
             if (ignoreCase)
             {
                 // add flag
-                _regxOptions |= RegexOptions.IgnoreCase;
+                RegxOptions |= RegexOptions.IgnoreCase;
             }
             else
             {
                 // remove flag (Think bitwise)
-                _regxOptions &= ~RegexOptions.IgnoreCase;
+                RegxOptions &= ~RegexOptions.IgnoreCase;
             }
 
             return this;
@@ -210,7 +210,7 @@ namespace Scrubbie
         {
             // Call static replace method, strip and save
 
-            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty, _regxOptions, _tkoSeconds);
+            _translatedStr = Regex.Replace(_translatedStr, matchRegx, String.Empty, RegxOptions, _tkoSeconds);
 
             return this;
         }
@@ -224,9 +224,9 @@ namespace Scrubbie
         /// <returns>string</returns>
         private string Map(string origStr)
         {
-            if (string.IsNullOrEmpty(origStr))
+            if (String.IsNullOrEmpty(origStr))
             {
-                return string.Empty;
+                return String.Empty;
             }
 
             // simple in this case, just get the value from the map
@@ -249,7 +249,7 @@ namespace Scrubbie
         {
             if (String.IsNullOrEmpty(_translatedStr) || String.IsNullOrEmpty(splitString))
             {
-                _translatedStr = string.Empty;
+                _translatedStr = String.Empty;
                 return this;
             }
 
@@ -274,7 +274,7 @@ namespace Scrubbie
 
             if (cleanStr.Length == 0)
             {
-                _translatedStr = string.Empty;
+                _translatedStr = String.Empty;
                 return this;
             }
 
@@ -302,7 +302,7 @@ namespace Scrubbie
             {
                 // static will compile and cache the regx for each one
 
-                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2, _regxOptions, _tkoSeconds);
+                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2, RegxOptions, _tkoSeconds);
             }
 
             return this;
@@ -329,7 +329,7 @@ namespace Scrubbie
 
             // static will compile and cache the regx for each one
 
-            _translatedStr = Regex.Replace(_translatedStr, RegxMatchesDefined[preDefined], replacement, _regxOptions, _tkoSeconds);
+            _translatedStr = Regex.Replace(_translatedStr, RegxMatchesDefined[preDefined], replacement, RegxOptions, _tkoSeconds);
 
             return this;
         }
