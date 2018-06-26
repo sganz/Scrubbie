@@ -1,6 +1,8 @@
 # Scrubbie
 [![license](https://img.shields.io/github/license/desktop/desktop.svg?style=flat-square)](https://github.com/desktop/desktop/blob/master/LICENSE)
 
+![alt text](https://user-images.githubusercontent.com/5179047/41923201-b27b9b1c-791b-11e8-98dd-fd7fb15f122a.png)
+
 C# Scrubbing Helper
 Simple helper class for doing text scrubbing, generally Regex's behind the scenes. 
 
@@ -17,7 +19,8 @@ Simple helper class for doing text scrubbing, generally Regex's behind the scene
 
 // The example below of accent chars, and their non-accented equiv
 // Both strings must be 1 to 1 mapping and size of strings. This was done as strings
-// to make it easier to deal with lots of characters.
+// to make it easier to deal with lots of characters. Can also add directly to the CharTransDict
+// if you want instead of a set of strings.
 
 string matchChar =   "ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ¡¿";
 string replaceChar = "SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy  ";
