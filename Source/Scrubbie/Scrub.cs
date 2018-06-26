@@ -46,16 +46,18 @@ namespace Scrubbie
         /// </summary>
         public Dictionary<string, string> RegxMatchesDefined { private set; get; } = new Dictionary<string, string>()
         {
-            { "WhitespaceCompact" , @"\s+"},
-            { "WhitespaceEnds", @"^\s*|\s*$" }, // like regular string trim
+            { "WhitespaceCompact" , @"\s+"},    // Match multi-white space, used to compact white space
+            { "WhitespaceEnds", @"^\s*|\s*$" }, // Match begin and end whitespace
+            { "WhitespaceBegin", @"^\s*" },     // Match whitespace in front
+            { "WhitespaceEnd", @"\s*$" },       // Match whitespace in End
             { "SingleEmailMask", @"(?<=.{2}).(?=[^@]*?@)" },  // masks a string with single email, confused by extra @ like abc***@crap.com
-            { "Email", @"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)"},
+            { "Email", @"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)"},   // fair regex, better than most I found
             { "NonAscii", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*" }, // removes all non-Ascii
-            { "TagsSimple" , @"\<[^\>]*\>" },     // strip tags, simple version
-            { "ScriptTags" , @"<script[^>]*>[\s\S]*?</script>" },
-            { "ENNumber", @"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"}, // format with a decimal as a period, no commas for 1000's
-            { "EUNumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)"}, // format with a decimal as a comma, no period for 1000's
-            { "UniNumber", @"[+-]?([0-9]+([.,][0-9]*)?|[,.][0-9]+)"}, // picks up numbers with either comma, period in either place. May not be valid numbers
+            { "TagsSimple" , @"\<[^\>]*\>" },     // strip tags, simple version matches anything inside `<>`
+            { "ScriptTags" , @"<script[^>]*>[\s\S]*?</script>" },       // matches script tag, use before Tags Simple if stripping html
+            { "ENNumber", @"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"},      // format with a decimal as a period, no commas for 1000's
+            { "EUNumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)"},      // format with a decimal as a comma, no period for 1000's
+            { "UniNumber", @"[+-]?([0-9]+([.,][0-9]*)?|[,.][0-9]+)"},   // picks up numbers with either comma, period in either place. May not be valid numbers
         };
 
         /// <summary>

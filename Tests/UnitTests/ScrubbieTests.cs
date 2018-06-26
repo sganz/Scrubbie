@@ -219,8 +219,8 @@ namespace UnitTests
             Scrub st = new Scrub("");
             RegexOptions expected = RegexOptions.IgnoreCase;
 
-            // set case and check
-            st.RegxIgnoreCase(true);
+            // set case and check (default setting is `true`)
+            st.RegxIgnoreCase();
 
             Assert.AreEqual(expected, st.RegxOptions & RegexOptions.IgnoreCase);
         }
