@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<package  xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>scribbie</id>
+    <version>1.00</version>
+    <title>Simple Text Scubbing Package</title>
+    <authors>Sandy Ganz</authors>
+    <owners></owners>
+    <licenseUrl>MIT</licenseUrl>
+    <projectUrl></projectUrl>
+    <iconUrl></iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Scrubbie is a simple set of helpers, some Regex based to do text scrubbing</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>(C) 2018 Sandy Ganz</copyright>
+    <tags>Text Scrubbing Regex Mapping Char Translation</tags>
+    <dependencies>
+      <dependency id="" />
+    </dependencies>
+    <summary>Simple set of helper functions for text scrubbing</summary>
+  </metadata>
+  <files>
+    <file src="README.md" target="" />
+  </files>
+</package>
