@@ -12,11 +12,11 @@
     <RepositoryUrl>https://github.com/sganz/Scrubbie</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Text Regex Pattern Scrubbing</PackageTags>
-    <PackageReleaseNotes>Minor code cleaning, added comments, a few test cases and a couple of checks for null strings</PackageReleaseNotes>
+    <PackageReleaseNotes>Minor code cleaning, added comments, a few test cases and a couple of checks for null strings, also fixed up version number.</PackageReleaseNotes>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageId>Scrubbie</PackageId>
-    <Version>1.0.0.1</Version>
+    <Version>1.1.0</Version>
     <Company>Sandy Ganz</Company>
     <FileVersion>1.0.0.0</FileVersion>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
