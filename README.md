@@ -3,13 +3,18 @@
 
 ![alt text](https://user-images.githubusercontent.com/5179047/41923201-b27b9b1c-791b-11e8-98dd-fd7fb15f122a.png)
 
-C# Scrubbing Helper
-Simple helper class for doing text scrubbing, generally Regex's behind the scenes. 
+# C# Text Scrubbing
+Simple helper class for doing text scrubbing, cleaning, and formatting. 
+Generally Regex's behind the scenes, with a few other dictionary mappings to 
+help things move along. Access to a few of the Regex's special features such 
+as maximum execution time and compiled cache size are controllable as well.
 
 * Strip stings from other strings
 * Replace by list of regexs
 * Replace words by other words
 * Translate characters from one set to another
+* Pre-Defined list of useful Regex's (runtime expandable)
+* Source on Github
 
 # Easy To Use
 
@@ -95,18 +100,49 @@ string translated = st.Strip("[,]").MapChars().MapWords().RegxTranslate().Strip(
 // Magoo the Ford guys don#t like Mercedes guys and and no one like Fiat Ola Magoo?!
 
 Console.WriteLine("Translated   : >{0}<", translated);
+
+// ** Test Pre-Defined Regex Patterns **
+
+// reset the string with some emails
+st.Set("Hank@kimball.com is sending an email to haystack@calhoon.com");
+
+translated = st.RegxDefined("Email", "**Email Removed**").ToString();
+
+Console.WriteLine("Masked   : >{0}<", translated);
+
+st.Set("　前に来た時は北側からで、当時の光景はいまでも思い出せる。 Even now I remember the scene I saw approaching the city from the north. 　青竜山脈から流れる川が湖へと流れこむ様、湖の中央には純白のホ");
+translated = st.RegxDefined("NonAscii", string.Empty).ToString();
+
+Console.WriteLine("To all ASCII : >{0}<", translated);
+
+// reset the string with some emails
+st.Set(@"<h1>Title</h1><script>var a=1; \\comment</script> Not In Script Tags");
+
+translated = st.RegxDefined("ScriptTags", string.Empty).RegxDefined("TagsSimple", string.Empty).ToString();
+
+Console.WriteLine("Strip Script and Tags   : >{0}<", translated);
+
+// reset and set up a predefined match pattern and set regx case sensitivity
+st.Set("wtf does RemoveWTF do? Is WtF Case SeNsItIvE?");
+st.RegxMatchesDefined.Add("RemoveWTF", @"(wtf)|(what the)\s+(hell|$hit)");
+
+translated = st.RegxIgnoreCase().RegxDefined("RemoveWTF", "XXX").ToString();
+Console.WriteLine("New Pre-defined Match   : >{0}<", translated);
 ```
 
-Todo: 
-This is a .Net 2.0 Core build. Need to make it a package for nuget.org
+# Todo
 More useful functionality, still basically a wrapper around regex stuff
-Add constant regex patterns for things like space removal, trim, etc
+Add constant regex patterns for things like space removal, trim, etc.
+Currently Core 2.0 build.
 
 # Examples
-Check out the Examples project directory to see a general example of how it can be used. 
+Check out the Examples project directory on Github to see a general example of how it can be used. 
 
 # Tests
-The project has unit and integration tests. Look at the tests for some additional use patterns.
+The project has unit and integration tests. Also look at the tests for some additional use patterns.
+
+# Your Suggestion
+Help with some ideas, code fixes are welcome. Use Github for opening request, bugs, etc.
 
 # License 
 MIT

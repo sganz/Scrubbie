@@ -5,6 +5,9 @@ using System.Text.RegularExpressions;
 
 namespace Scrubbie
 {
+    /// <summary>
+    /// Main Class where all the magic happens.
+    /// </summary>
     public class Scrub
     {
         const int DefaultRegxCacheSize = 16;
@@ -31,18 +34,14 @@ namespace Scrubbie
         /// </summary>
         public int CacheSize
         {
-            set
-            {
-                Regex.CacheSize = value < 0 ? DefaultRegxCacheSize : value;
-            }
-
+            set => Regex.CacheSize = value < 0 ? DefaultRegxCacheSize : value;
             get => Regex.CacheSize;
         }
 
         /// <summary>
         /// Default regx dictionay of helpers that do common things. Basically
-        /// a dictionay of tuples that  have the Match Pattern and the Replace String.
-        /// Under user control so can be updated.
+        /// a dictionay of tuples that  have the Match Pattern. Under user
+        /// control so can be updated at runtime
         /// </summary>
         public Dictionary<string, string> RegxMatchesDefined { private set; get; } = new Dictionary<string, string>()
         {
@@ -65,9 +64,10 @@ namespace Scrubbie
         /// for any needed variable and the initial string for which we want to scrub.
         /// </summary>
         /// <param name="origString">A string with each character to map</param>
+        /// <exception cref="ArgumentNullException">Throws on null arg</exception>
         public Scrub(string origString)
         {
-            _translatedStr = origString;
+            _translatedStr = origString ?? throw new ArgumentNullException(nameof(origString));
 
             StringTransDict = new Dictionary<string, string>();
             RegxTuples = new List<(string, string)>();
@@ -98,6 +98,9 @@ namespace Scrubbie
             // set up the comparer for the dictionary
 
             StringComparer comparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+
+            // create dict based on params
+
             StringTransDict = translateMap == null ? new Dictionary<string, string>(comparer) : new Dictionary<string, string>(translateMap, comparer);
         }
 
@@ -141,18 +144,7 @@ namespace Scrubbie
         /// <param name="regxTuplesList">List of regx and replacement strings</param>
         public void SetRegxTranslator(List<(string, string)> regxTuplesList = null)
         {
-            if (regxTuplesList == null)
-            {
-                // create empty list
-
-                RegxTuples = new List<(string, string)>();
-            }
-            else
-            {
-                // copy the existing list
-
-                RegxTuples = new List<(string, string)>(regxTuplesList);
-            }
+            RegxTuples = regxTuplesList == null ? new List<(string, string)>() : new List<(string, string)>(regxTuplesList);
         }
 
         /// <summary>
@@ -183,7 +175,7 @@ namespace Scrubbie
         /// Translates given string based on the the characters in the dictionary. If character is
         /// not in the dictionay, it is pass thru untouched. Size of string is not changed.
         /// </summary>
-        /// <returns>Scrubbies</returns>
+        /// <returns>Scrub</returns>
         public Scrub MapChars()
         {
             // create a new stringbuild of the same size
@@ -207,7 +199,7 @@ namespace Scrubbie
         /// static calls like this.
         /// </summary>
         /// <param name="matchRegx"></param>
-        /// <returns>Scrubbies</returns>
+        /// <returns>Scrub</returns>
         public Scrub Strip(string matchRegx)
         {
             // Call static replace method, strip and save
@@ -246,7 +238,7 @@ namespace Scrubbie
         /// it will be be a candidate for further translation.
         /// </summary>
         /// <param name="splitString">Will split the string on this string</param>
-        /// <returns>Scrubbies</returns>
+        /// <returns>Scrub</returns>
         public Scrub MapWords(string splitString = " ")
         {
             if (String.IsNullOrEmpty(_translatedStr) || String.IsNullOrEmpty(splitString))
@@ -266,6 +258,8 @@ namespace Scrubbie
 
             foreach (string element in elements)
             {
+                // This is subject to any sb issues with nulls, etc
+
                 sb.Append(Map(element));
                 sb.Append(splitString);
             }
@@ -294,11 +288,12 @@ namespace Scrubbie
         /// based on regx's AND at each new regx match pattern it will be reapplied to any
         /// previously applied matches that may have been replaced.
         /// </summary>
-        /// <returns>Scrubbies</returns>
+        /// <returns>Scrub</returns>
         public Scrub RegxTranslate()
         {
             // for each regx replace in the tuple list do a regx replace
-            // with the regx as Item1 and the replace as Item2
+            // with the regx as Item1 and the replace as Item2. Note regex will
+            // throw if null set for most anything.
 
             foreach ((string, string) regxTuple in RegxTuples)
             {
@@ -319,7 +314,7 @@ namespace Scrubbie
         ///  </summary>
         /// <param name="preDefined">String Name of the predefined match pattern</param>
         /// <param name="replacement">String of the data to replace matches, default is to empty string (strip)</param>
-        /// <returns>Scrubbies</returns>
+        /// <returns>Scrub</returns>
         public Scrub RegxDefined(string preDefined, string replacement = "")
         {
             // Throw with nicer message if invalid dict key
@@ -340,10 +335,11 @@ namespace Scrubbie
         /// Set the current working string
         /// </summary>
         /// <param name="workingStr"></param>
-        /// <returns>Scrubbies</returns>
+        /// <returns>Scrub</returns>
+        /// <exception cref="ArgumentNullException">Throws on null arg</exception>
         public Scrub Set(string workingStr)
         {
-            _translatedStr = workingStr;
+            _translatedStr = workingStr ?? throw new ArgumentNullException(nameof(workingStr));
 
             return this;
         }

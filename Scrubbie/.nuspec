@@ -2,7 +2,7 @@
 <package  xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>scribbie</id>
-    <version>1.00</version>
+    <version>1.01</version>
     <title>Simple Text Scubbing Package</title>
     <authors>Sandy Ganz</authors>
     <owners></owners>
@@ -10,14 +10,14 @@
     <projectUrl>https://github.com/sganz/Scrubbie</projectUrl>
     <iconUrl>https://user-images.githubusercontent.com/5179047/42042618-6e7fc7e6-7aa9-11e8-92ae-35f7d0a3a2e1.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Scrubbie is a simple set of helpers, some Regex based to do text scrubbing, character mapping, and word mapping.</description>
+    <description>Scrubbie is a simple set of helpers, some Regex based to do text scrubbing, character mapping, and word mapping. Included pre-defined Regex's to help common tasks.</description>
     <releaseNotes>Initial Release</releaseNotes>
     <copyright>(C) 2018 Sandy Ganz</copyright>
     <tags>Text Scrubbing Regex Mapping Char Translation</tags>
     <dependencies>
       <dependency id="" />
     </dependencies>
-    <summary>Simple set of helper functions for text scrubbing</summary>
+    <summary>Simple class to help out with text scrubbing, character translation, and other simple text processing.</summary>
   </metadata>
   <files>
     <file src="README.md" target="" />

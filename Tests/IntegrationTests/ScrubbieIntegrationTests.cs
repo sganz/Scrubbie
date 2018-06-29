@@ -84,7 +84,7 @@ namespace IntegrationTests
             {
                 {"chevrolet", "Ford"},
                 {"mAzDa", "BMW"},
-                {"and and", "and"}  // will never match
+                {"and and", "and"},  // will never match
             };
 
             // Need `System.ValueTuple` package to do this style of init

@@ -2,6 +2,28 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Sandy Ganz</Authors>
+    <Product>Scrubbie - Simple Text Scrubbing</Product>
+    <Description>A simple package for text scrubbing, regex replacement, character and word mapping. My first attempt at a simple scrubbing package.</Description>
+    <Copyright>(C) 2018 Sandy Ganz</Copyright>
+    <PackageLicenseUrl>MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/sganz/Scrubbie</PackageProjectUrl>
+    <PackageIconUrl>https://user-images.githubusercontent.com/5179047/42042618-6e7fc7e6-7aa9-11e8-92ae-35f7d0a3a2e1.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/sganz/Scrubbie</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Text Regex Pattern Scrubbing</PackageTags>
+    <PackageReleaseNotes>Minor code cleaning, added comments, a few test cases and a couple of checks for null strings</PackageReleaseNotes>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageId>Scrubbie</PackageId>
+    <Version>1.0.0.1</Version>
+    <Company>Sandy Ganz</Company>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
 </Project>

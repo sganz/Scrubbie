@@ -33,6 +33,20 @@ namespace UnitTests
             Assert.AreEqual(expect, st.ToString());
             Assert.IsNotNull(st.RegxMatchesDefined);
         }
+        [TestMethod]
+
+        public void Strip_StringNull_Throws()
+        {
+            Assert.ThrowsException<ArgumentNullException> (() => new Scrub(null));
+        }
+
+        [TestMethod]
+        public void Set_Null_Throws()
+        {
+            Scrub st = new Scrub("abc");
+
+            Assert.ThrowsException<ArgumentNullException>(() => st.Set(null));
+        }
 
         [TestMethod]
         public void Translate_EmptyEverything_ExpectSameString()
@@ -133,6 +147,7 @@ namespace UnitTests
             Assert.AreEqual(0, st.StringTransDict.Count);
             CollectionAssert.AreEqual(expectedList, st.RegxTuples);
         }
+
         [TestMethod]
         public void TestAll()
         {
