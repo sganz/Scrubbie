@@ -19,7 +19,7 @@ as maximum execution time and compiled cache size are controllable as well.
 # Easy To Use
 
 ``` c#
-// Map any character to any other character. The matchCarArray MUST be only
+// Map any character to any other character. The matchCharArray MUST be only
 // have unique characters. The replaceChar array will have the matching translated char.
 
 // The example below of accent chars, and their non-accented equiv
@@ -133,7 +133,8 @@ Console.WriteLine("New Pre-defined Match   : >{0}<", translated);
 # Todo
 More useful functionality, still basically a wrapper around regex stuff
 Add constant regex patterns for things like space removal, trim, etc.
-Currently Core 2.0 build.
+Currently Core 2.0 build. Searilize Pre-defined dict to persist, and restor. Support
+regex match call back in a simple way.
 
 # Examples
 Check out the Examples project directory on Github to see a general example of how it can be used. 
@@ -142,7 +143,8 @@ Check out the Examples project directory on Github to see a general example of h
 The project has unit and integration tests. Also look at the tests for some additional use patterns.
 
 # Your Suggestion
-Help with some ideas, code fixes are welcome. Use Github for opening request, bugs, etc.
+Help with some ideas, code fixes are welcome. Use Github for opening request, bugs, etc. 
+Submit a PR for new Regex's, bug fixes, suggestions!
 
 # License 
 MIT

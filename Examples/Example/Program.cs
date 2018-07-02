@@ -1,9 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Scrubbie;
 
 namespace Example
 {
+    /// <summary>
+    /// Simple helper class to create a couple of match'ers
+    ///
+    /// This has 2 potential usable match functions
+    /// </summary>
+    class Upper
+    {
+        // Make just the first letter of each match Upper
+        public string FirstUpper(Match match)
+        {
+            string word = match.Value;
+            return char.ToUpper(word[0]) + word.Substring(1);
+        }
+
+        // Make the entire match upper case
+        public string AllUpper(Match match)
+        {
+            return match.Value.ToUpper();
+        }
+    }
+
+    /// <summary>
+    /// Simple Class that uses the Regex's Match Groups.
+    /// </summary>
+    class FlipFlopper
+    {
+        public string FlipFlop(Match match)
+        {
+            // match.Groups[0] is the original match, same as match.Value I think...
+
+            // Take the first part of the match and flip it around with the second
+            // Also flip the comparison sign around
+
+            string firstWord = match.Groups[1].Value;       // First Match Group
+            string sep = match.Groups[2].Value;             // Second Match Group
+            string secondWord = match.Groups[3].Value;      // Third Match Group
+
+            return secondWord + sep + firstWord;
+        }
+    }
+
+    /// <summary>
+    /// Simple replacer class. This is a bit more complicated as you
+    /// need the replacement string to be scoped to the class so it
+    /// can be replaced by the match method
+    /// </summary>
+    class Replacer
+    {
+        private readonly string _replacement;
+
+        public Replacer(string replacement)
+        {
+            _replacement = replacement;
+        }
+
+        public string ReplaceMatch(Match match)
+        {
+            return _replacement;
+        }
+    }
+
     class Program
     {
         // ReSharper disable once UnusedParameter.Local
@@ -115,6 +177,87 @@ namespace Example
 
             translated = st.RegxIgnoreCase().RegxDefined("RemoveWTF", "XXX").ToString();
             Console.WriteLine("New Pre-defined Match   : >{0}<", translated);
+
+            // same as sluggify
+
+            st.Set("Excursion    Front Brake Pad Replacement");
+            translated = st.RegxDefined("WhitespaceCompact", "-").ToString().ToLower();
+            Console.WriteLine("Sluggify   : >{0}<", translated);
+
+            // strip hyphens
+
+            st.Set(translated);
+            translated = st.RegxDefined("Un-Hypen", " ").ToString();
+            Console.WriteLine("Un-Sluggify   : >{0}<", translated);
+
+            //
+            // Now try some custom Regex Matchers
+            //
+
+            // All in one with lambda function
+
+            st.Set("I want the first letter of each word capitalized");
+            translated = st.TestEvaluator(@"\w+", m => m.Value[0].ToString().ToUpper() + m.Value.Substring(1)).ToString();
+
+            Console.WriteLine("Lambda First Letter To Upper : >{0}<", translated);
+
+            // WordReplacer method is STATIC so just pass it along to do the work
+
+            st.Set("I want the first letter of each word capitalized, aGain");
+            translated = st.TestEvaluator(@"\w+", StaticWordFirstUpperCaser).ToString();
+
+            Console.WriteLine("Static Method First Letter to Upper : >{0}<", translated);
+
+            // Now do some non-static classes various match helpers
+
+            // Upper Case First
+
+            var upperCaseStuff = new Upper();
+            MatchEvaluator myCaseClassEvaluator = upperCaseStuff.FirstUpper;
+
+            st.Set("From another static class we can get stuff for the match function and do stuff");
+            translated = st.TestEvaluator(@"\w+", myCaseClassEvaluator).ToString();
+
+            Console.WriteLine("Custom Matcher Class First to Upper   : >{0}<", translated);
+
+            myCaseClassEvaluator = upperCaseStuff.AllUpper;
+            st.Set("From another static class we can get stuff for the match function and do stuff");
+            translated = st.TestEvaluator(@"\w+", myCaseClassEvaluator).ToString();
+
+            Console.WriteLine("Custom Matcher All Upper   : >{0}<", translated);
+
+            var flipFlopStuff = new FlipFlopper();
+            var myFlipFlopEvaluator = new MatchEvaluator(flipFlopStuff.FlipFlop);
+
+            // Now a Flip Flopper that looks at Regex Match Groups
+            //
+            // ([a-z0-9\-]+)(\.)([a-z0-9\-]+) Match stuff with a perior in the middle like -
+            //    "First.Second"
+
+            st.Set("First.Second");
+            translated = st.TestEvaluator(@"([a-z0-9\-]+)(\.)([a-z0-9\-]+)", myFlipFlopEvaluator).ToString();
+
+            Console.WriteLine("Custom Matcher Flip Floper   : {0}", translated);
+
+            // Now a bit tricky, since we need to set up a parameter that the matcher
+            // can see, we need to set it to an internal class var so it can be used.
+            // Replace 'chevy' match with 'Chevrolet'
+
+            var replaceStuff = new Replacer("Chevrolet");
+            MatchEvaluator myReplacementClassEvaluator = replaceStuff.ReplaceMatch;
+
+            st.Set("The repacement for a chevy should be the full name, not short.");
+            translated = st.TestEvaluator(@"chevy", myReplacementClassEvaluator).ToString();
+
+            Console.WriteLine("Custom Matcher Replacer     : {0}", translated);
+        }
+
+        // Static matcher method defined
+
+        private static string StaticWordFirstUpperCaser(Match match)
+        {
+            string word = match.Value;
+            return char.ToUpper(word[0]) + word.Substring(1);
         }
     }
 }

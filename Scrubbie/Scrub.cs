@@ -42,21 +42,25 @@ namespace Scrubbie
         /// Default regx dictionay of helpers that do common things. Basically
         /// a dictionay of tuples that  have the Match Pattern. Under user
         /// control so can be updated at runtime
+        ///
+        /// Please see https://regex101.com/ for testing and learning more how these will work
+        ///
         /// </summary>
         public Dictionary<string, string> RegxMatchesDefined { private set; get; } = new Dictionary<string, string>()
         {
-            { "WhitespaceCompact" , @"\s+"},    // Match multi-white space, used to compact white space
+            { "WhitespaceCompact", @"\s+" },     // Match multi-white space, used to compact white space
             { "WhitespaceEnds", @"^\s*|\s*$" }, // Match begin and end whitespace
             { "WhitespaceBegin", @"^\s*" },     // Match whitespace in front
             { "WhitespaceEnd", @"\s*$" },       // Match whitespace in End
-            { "SingleEmailMask", @"(?<=.{2}).(?=[^@]*?@)" },  // masks a string with single email, confused by extra @ like abc***@crap.com
+            { "SingleEmailMask", @"(?<=.{2}).(?=[^@]*?@)" },            // single email ONLY match, confused by extra @'s if found in string
             { "Email", @"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)"},   // fair regex, better than most I found
-            { "NonAscii", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*" }, // removes all non-Ascii
-            { "TagsSimple" , @"\<[^\>]*\>" },     // strip tags, simple version matches anything inside `<>`
+            { "NonAscii", @"[^\x00-\x7F]+\ *(?:[^\x00-\x7F]| )*" },     // removes all non-Ascii
+            { "TagsSimple" , @"\<[^\>]*\>" },                           // strip tags, simple version matches anything inside `<>`
             { "ScriptTags" , @"<script[^>]*>[\s\S]*?</script>" },       // matches script tag, use before Tags Simple if stripping html
-            { "ENNumber", @"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)"},      // format with a decimal as a period, no commas for 1000's
-            { "EUNumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)"},      // format with a decimal as a comma, no period for 1000's
-            { "UniNumber", @"[+-]?([0-9]+([.,][0-9]*)?|[,.][0-9]+)"},   // picks up numbers with either comma, period in either place. May not be valid numbers
+            { "ENNumber", @"[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)" },     // format with a decimal as a period, no commas for 1000's
+            { "EUNumber", @"[+-]?([0-9]+([,][0-9]*)?|[,][0-9]+)" },     // format with a decimal as a comma, no period for 1000's
+            { "UniNumber", @"[+-]?([0-9]+([.,][0-9]*)?|[,.][0-9]+)" },  // picks up numbers with either comma, period in either place. May not be valid numbers
+            { "Un-Hypen", @"(?<=\w)-+(?=\w)" },                         // breaks up hypens followed by word, ignores front and back hyphen
         };
 
         /// <summary>
@@ -327,6 +331,13 @@ namespace Scrubbie
             // static will compile and cache the regx for each one
 
             _translatedStr = Regex.Replace(_translatedStr, RegxMatchesDefined[preDefined], replacement, RegxOptions, _tkoSeconds);
+
+            return this;
+        }
+
+        public Scrub TestEvaluator(string match, MatchEvaluator myEvaluator)
+        {
+            _translatedStr = Regex.Replace(_translatedStr, match, myEvaluator, RegxOptions, _tkoSeconds);
 
             return this;
         }
