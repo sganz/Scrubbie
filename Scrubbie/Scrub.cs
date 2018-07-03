@@ -293,17 +293,29 @@ namespace Scrubbie
         /// previously applied matches that may have been replaced.
         /// </summary>
         /// <returns>Scrub</returns>
-        public Scrub RegxTranslate()
+        public Scrub RegxTranslate(MatchEvaluator userEvaluator = null)
         {
             // for each regx replace in the tuple list do a regx replace
             // with the regx as Item1 and the replace as Item2. Note regex will
             // throw if null set for most anything.
 
+            string replaceWithMe = String.Empty;
+
+            // create a lambda function IF userEvaluator delegate is empty
+            // Note that R# will complain but we really do want to change the
+            // value at each loop.
+
+            userEvaluator = userEvaluator ?? (m => replaceWithMe);
+
             foreach ((string, string) regxTuple in RegxTuples)
             {
-                // static will compile and cache the regx for each one
+                // static Regex will compile and cache the regx for each one
 
-                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, regxTuple.Item2, RegxOptions, _tkoSeconds);
+                // Get the replace vale at each iteration, and so lambda function will pick it up
+
+                replaceWithMe = regxTuple.Item2;    // Only affects operation when replace action is performed
+
+                _translatedStr = Regex.Replace(_translatedStr, regxTuple.Item1, userEvaluator, RegxOptions, _tkoSeconds);
             }
 
             return this;
@@ -335,7 +347,8 @@ namespace Scrubbie
             return this;
         }
 
-        public Scrub TestEvaluator(string match, MatchEvaluator myEvaluator)
+
+        public Scrub RegxUserMatchEval(string match, MatchEvaluator myEvaluator)
         {
             _translatedStr = Regex.Replace(_translatedStr, match, myEvaluator, RegxOptions, _tkoSeconds);
 

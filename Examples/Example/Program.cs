@@ -197,14 +197,23 @@ namespace Example
             // All in one with lambda function
 
             st.Set("I want the first letter of each word capitalized");
-            translated = st.TestEvaluator(@"\w+", m => m.Value[0].ToString().ToUpper() + m.Value.Substring(1)).ToString();
+            translated = st.RegxUserMatchEval(@"\w+", m => m.Value[0].ToString().ToUpper() + m.Value.Substring(1)).ToString();
 
             Console.WriteLine("Lambda First Letter To Upper : >{0}<", translated);
+
+            // Lambda Style Replace
+
+            string replaceWithMe = "FORD";
+
+            st.Set("The repacement for a chevy should be the full name, not short.");
+            translated = st.RegxUserMatchEval(@"chevy", m => replaceWithMe).ToString();
+
+            Console.WriteLine("Lambda Match Replacer     : {0}", translated);
 
             // WordReplacer method is STATIC so just pass it along to do the work
 
             st.Set("I want the first letter of each word capitalized, aGain");
-            translated = st.TestEvaluator(@"\w+", StaticWordFirstUpperCaser).ToString();
+            translated = st.RegxUserMatchEval(@"\w+", StaticWordFirstUpperCaser).ToString();
 
             Console.WriteLine("Static Method First Letter to Upper : >{0}<", translated);
 
@@ -216,13 +225,13 @@ namespace Example
             MatchEvaluator myCaseClassEvaluator = upperCaseStuff.FirstUpper;
 
             st.Set("From another static class we can get stuff for the match function and do stuff");
-            translated = st.TestEvaluator(@"\w+", myCaseClassEvaluator).ToString();
+            translated = st.RegxUserMatchEval(@"\w+", myCaseClassEvaluator).ToString();
 
             Console.WriteLine("Custom Matcher Class First to Upper   : >{0}<", translated);
 
             myCaseClassEvaluator = upperCaseStuff.AllUpper;
             st.Set("From another static class we can get stuff for the match function and do stuff");
-            translated = st.TestEvaluator(@"\w+", myCaseClassEvaluator).ToString();
+            translated = st.RegxUserMatchEval(@"\w+", myCaseClassEvaluator).ToString();
 
             Console.WriteLine("Custom Matcher All Upper   : >{0}<", translated);
 
@@ -235,7 +244,7 @@ namespace Example
             //    "First.Second"
 
             st.Set("First.Second");
-            translated = st.TestEvaluator(@"([a-z0-9\-]+)(\.)([a-z0-9\-]+)", myFlipFlopEvaluator).ToString();
+            translated = st.RegxUserMatchEval(@"([a-z0-9\-]+)(\.)([a-z0-9\-]+)", myFlipFlopEvaluator).ToString();
 
             Console.WriteLine("Custom Matcher Flip Floper   : {0}", translated);
 
@@ -247,9 +256,10 @@ namespace Example
             MatchEvaluator myReplacementClassEvaluator = replaceStuff.ReplaceMatch;
 
             st.Set("The repacement for a chevy should be the full name, not short.");
-            translated = st.TestEvaluator(@"chevy", myReplacementClassEvaluator).ToString();
+            translated = st.RegxUserMatchEval(@"chevy", myReplacementClassEvaluator).ToString();
 
             Console.WriteLine("Custom Matcher Replacer     : {0}", translated);
+
         }
 
         // Static matcher method defined

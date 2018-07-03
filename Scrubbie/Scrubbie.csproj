@@ -24,6 +24,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
 </Project>

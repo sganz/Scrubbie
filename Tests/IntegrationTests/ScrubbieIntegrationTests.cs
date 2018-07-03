@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Scrubbie;
 
@@ -8,6 +9,13 @@ namespace IntegrationTests
     [TestClass]
     public class ScrubbieIntegrationTests
     {
+        // Delegate method for the Matcher
+
+        public string LowerCaseMatcher(Match match)
+        {
+            return match.Value.ToLower();
+        }
+
         [TestMethod]
         public void Predefined_CompactWhitespace_Compacted()
         {
@@ -63,6 +71,57 @@ namespace IntegrationTests
             st.Set(sentence);
             st.RegxMatchesDefined.Add("RemoveWTF", @"(wtf)|(what the)\s+(hell|$hit)");
             st.RegxDefined("RemoveWTF", "XXX");
+
+            Assert.AreEqual(expectedSentance, st.ToString());
+        }
+
+        [TestMethod]
+        public void Translate_RegxTranslateDefault_Matches()
+        {
+
+            string sentence = "  Señor, the BMW guys don't like     Dodge     guys, and and no one like MaZdA.    ";
+            string expectedSentance = "Señor, the Fiat guys don't like Dodge guys, and and no one like Daihatsu.";
+
+            // Need `System.ValueTuple` package to do this style of init
+            // on v4.6 and below
+
+            List<(string, string)> regxList = new List<(string, string)>
+            {   // Match, Replace
+                ("BMW", "Fiat"),
+                ("MaZdA", "Daihatsu"),
+                (@"\s+", " "),         // multi whitespace to 1 space
+                (@"^\s*|\s*$", "")     // trims leading/ending spaces
+            };
+
+            Scrub st = new Scrub(sentence);
+            st.SetRegxTranslator(regxList);
+            st.RegxTranslate();
+
+            Assert.AreEqual(expectedSentance, st.ToString());
+        }
+
+        [TestMethod]
+        public void Translate_RegxTranslateUserMatch_Matches()
+        {
+            // Test the user delegate overide match. Replace values don't do anything
+            // in the regxList, just the match. Any match will be set to lower case. That is all.
+
+            string sentence = "Señor, the BMW guys don't like Dodge guys, and and no one like MaZdA.";
+            string expectedSentance = "Señor, the bmw guys don't like dodge guys, and and no one like mazda.";
+
+            // Need `System.ValueTuple` package to do this style of init
+            // on v4.6 and below
+
+            List<(string, string)> regxList = new List<(string, string)>
+            {   // Match, Replace Ignored since using LowerCaseMatche (user match delegate)
+                ("BMW", ""),
+                ("MaZdA", ""),
+                ("Dodge", "")
+            };
+
+            Scrub st = new Scrub(sentence);
+            st.SetRegxTranslator(regxList);
+            st.RegxTranslate(LowerCaseMatcher);
 
             Assert.AreEqual(expectedSentance, st.ToString());
         }
