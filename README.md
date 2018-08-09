@@ -9,7 +9,7 @@ Generally Regex's behind the scenes, with a few other dictionary mappings to
 help things move along. Access to a few of the Regex's special features such 
 as maximum execution time and compiled cache size are controllable as well.
 
-* Strip stings from other strings
+* Strip strings from other strings
 * Replace by list of regexs
 * Replace words by other words
 * Translate characters from one set to another
