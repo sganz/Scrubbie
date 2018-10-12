@@ -62,7 +62,7 @@ List<(string, string)> regxList = new List<(string, string)>
 
 string sentence = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
 
-// Dump the orig string
+// Dump the original string
 
 Console.WriteLine("The Sentence : >{0}<", sentence);
 
