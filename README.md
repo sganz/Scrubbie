@@ -16,7 +16,7 @@ as maximum execution time and compiled cache size are controllable as well.
 * Pre-Defined list of useful Regex's (runtime expandable)
 * Source on Github
 
-# Easy To Use
+# Very Easy To Use
 
 ``` c#
 // Map any character to any other character. The matchCarArray MUST be only
