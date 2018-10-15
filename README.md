@@ -13,7 +13,7 @@ as maximum execution time and compiled cache size are controllable as well.
 * Replace by list of regexs
 * Replace words by other words
 * Translate characters from one set to another
-* Pre-Defined list of useful Regex's (runtime expandable)
+* Pre-defined list of useful Regex's (runtime expandable)
 * Source on Github
 
 # Very Easy To Use
@@ -22,17 +22,17 @@ as maximum execution time and compiled cache size are controllable as well.
 // Map any character to any other character. The `matchChar` array MUST only
 // have unique characters. The `replaceChar` array will have the matching translated char.
 
-// The example below of accent chars, and their non-accented equiv
-// Both strings must be 1 to 1 mapping and size of strings. This was done as strings
-// to make it easier to deal with lots of characters. Can also add directly to the CharTransDict
-// if you want instead of a set of strings.
+// The example below of accent chars, and their non-accented equivalent
+// Both strings must be 1 to 1 mappings and size of strings. This was done as strings
+// to make it easier to deal with lots of characters.
+// If you would like, you can also directly add to the CharTransDict instead of a set of strings.
 
 string matchChar =   "ŠŒŽšœžŸ¥µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ¡¿";
 string replaceChar = "SOZsozYYuAAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy  ";
 
 // Set up a dictionary, if ignore case, set the dict up with a new comparer
 // These words are mapped to any instances of other words. See comments
-// on how this works vs regx, basically each word from a sentence is passed
+// on how this works vs regex, basically each word from a sentence is passed
 // to the dictionary for translation. Current or past changes are not candidates
 // for any further changes
 
@@ -53,12 +53,12 @@ Dictionary<string, string> wordDictionary = new Dictionary<string, string>(compa
 
 List<(string, string)> regxList = new List<(string, string)>
 {   // Match, Replace
-    ("BMW", "Fiat"),       // swaps 'BMW' (case dependent) with 'Fiat'
+    ("BMW", "Fiat"),       // swaps 'BMW' (case sensitive) with 'Fiat'
     (@"\s+", " "),         // multi whitespace to 1 space
     (@"^\s*|\s*$", "")     // trims leading/ending spaces
 };
 
-// Test sentence with odd characters, spaces and other things needing scrubbing
+// Test sentence with diacritics, spaces, and other things that need scrubbing
 
 string sentence = "¿¡Señor, the Chevrolet guys don't like     Dodge     guys, and and no one like MaZdA, Ola Senor?!    ";
 
