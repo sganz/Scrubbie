@@ -19,8 +19,8 @@ as maximum execution time and compiled cache size are controllable as well.
 # Very Easy To Use
 
 ``` c#
-// Map any character to any other character. The matchCarArray MUST be only
-// have unique characters. The replaceChar array will have the matching translated char.
+// Map any character to any other character. The `matchChar` array MUST only
+// have unique characters. The `replaceChar` array will have the matching translated char.
 
 // The example below of accent chars, and their non-accented equiv
 // Both strings must be 1 to 1 mapping and size of strings. This was done as strings
