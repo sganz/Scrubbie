@@ -17,7 +17,7 @@ namespace IntegrationTests
             Scrub st = new Scrub(sentence);
 
             // Compact whitespaces to one space, note does not imply trim!
-            // overides default empty string replace to replace with single space
+            // overrides default empty string replace to replace with single space
             // note trailing space at end of string
 
             st.RegxDefined("WhitespaceCompact", " ");
@@ -122,7 +122,7 @@ namespace IntegrationTests
 
             st.RegxTuples.Add(("Senor", "Mr.Magoo"));
 
-            // add a chracter Translation after the fact
+            // add a character Translation after the fact
 
             st.CharTransDict.Add('\'', '#');
 

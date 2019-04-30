@@ -39,8 +39,8 @@ namespace Scrubbie
         }
 
         /// <summary>
-        /// Default regx dictionay of helpers that do common things. Basically
-        /// a dictionay of tuples that  have the Match Pattern. Under user
+        /// Default regx dictionary of helpers that do common things. Basically
+        /// a dictionary of tuples that  have the Match Pattern. Under user
         /// control so can be updated at runtime
         /// </summary>
         public Dictionary<string, string> RegxMatchesDefined { private set; get; } = new Dictionary<string, string>()
@@ -90,7 +90,7 @@ namespace Scrubbie
         /// Set the string translation up. Basically accepts a dictionary and a case flag for
         /// comparison. If the incoming dictionary is null, and empty one will be created.
         /// </summary>
-        /// <param name="translateMap">Dictionay of words the map to each other</param>
+        /// <param name="translateMap">Dictionary of words the map to each other</param>
         /// <param name="ignoreCase">True ignore case on dictionary match, False (default)
         /// case sensitive match</param>
         public void SetStringTranslator(Dictionary<string, string> translateMap = null, bool ignoreCase = false)
@@ -150,7 +150,7 @@ namespace Scrubbie
         /// <summary>
         /// Sets the Regx pattern matcher to Ignore case. This can
         /// be used prior to any regx call. It does not affect any Map
-        /// function as those typically require the dictionay to be
+        /// function as those typically require the dictionary to be
         /// setup prior. So be warned this is ONLY for REGX's not MAP
         /// </summary>
         /// <param name="ignoreCase"></param>
@@ -173,12 +173,12 @@ namespace Scrubbie
 
         /// <summary>
         /// Translates given string based on the the characters in the dictionary. If character is
-        /// not in the dictionay, it is pass thru untouched. Size of string is not changed.
+        /// not in the dictionary, it is pass thru untouched. Size of string is not changed.
         /// </summary>
         /// <returns>Scrub</returns>
         public Scrub MapChars()
         {
-            // create a new stringbuild of the same size
+            // create a new string of the same size
             char[] chars = _translatedStr.ToCharArray();
 
             for (int i = 0; i < _translatedStr.Length; i++)
@@ -211,7 +211,7 @@ namespace Scrubbie
 
         /// <summary>
         /// Translates given string based on the dictionary. If character is
-        /// not in the dictionay, it is pass thru untouched. Internally
+        /// not in the dictionary, it is pass thru untouched. Internally
         /// used helper.
         /// </summary>
         /// <param name="origStr"></param>
@@ -231,9 +231,9 @@ namespace Scrubbie
         /// <summary>
         /// Translates a phrase that has each word separated by the 'pattern' string.
         /// Will swap the words in the dictionary if it matches, otherwise just pass
-        /// it as it was if no match. This adhears to the matching rules set when
+        /// it as it was if no match. This ad hears to the matching rules set when
         /// the dictionary was created. Generally the active string should be
-        /// clean and have sane word seperators like single space, comma, etc.
+        /// clean and have sane word separators like single space, comma, etc.
         /// This map will process one time against each word, and once a word is translated
         /// it will be be a candidate for further translation.
         /// </summary>
@@ -252,7 +252,7 @@ namespace Scrubbie
             string[] patternArray = { splitString };
             string[] elements = _translatedStr.Split(patternArray, StringSplitOptions.None);
 
-            // rebuild string, adding back in each mapped word and split seperator
+            // rebuild string, adding back in each mapped word and split separator
 
             StringBuilder sb = new StringBuilder();
 
